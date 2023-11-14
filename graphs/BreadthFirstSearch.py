@@ -1,22 +1,57 @@
 import unittest
 from hypothesis import given, strategies as st
 
+# Do not edit the class below except
+# for the breadthFirstSearch method.
+# Feel free to add new properties
+# and methods to the class.
+class Node:
+    def __init__(self, name):
+        self.children = []
+        self.name = name
 
+    def addChild(self, name):
+        self.children.append(Node(name))
+        return self
+    
+    def breadthFirstSearch(self, array, queue= None, depth=0):
+        if depth == 0:
+            array.append(self.name)
+            queue=[]
 
-class Tests(unittest.TestCase):
+        for child in self.children:
+            array.append(child.name)
+            queue.append(child)
 
-    def test_base_cases(self):
-        pass
+        if len(queue) > 0:
+            queue.pop(0).breadthFirstSearch(array, queue, depth+1)
+        return array
+    
+    # The above solution works but is not the best solution.
+    # Because we are using recursion, we are using a call stack,
+    # which is a data structure that is not constant space.
+    
 
-    def test_known_value(self):
-        pass
+# The following is the solution from AlgoExpert:
 
-    @given(st.integers(min_value=3, max_value=25))
-    def test_fibonacci_property(self, n):
-        fib_n = getNthFib(n)
-        fib_n_minus_1 = getNthFib(n-1)
-        fib_n_minus_2 = getNthFib(n-2)
-        self.assertEqual(fib_n, fib_n_minus_1 + fib_n_minus_2)
+# O(v + e) time | O(v) space
+class Node:
+    def __init__(self, name):
+        self.children = []
+        self.name = name
 
-if __name__ == "__main__":
-    unittest.main(argv=['first-arg-is-ignored'], exit=False)
+    def addChild(self, name):
+        self.children.append(Node(name))
+        return self
+
+    def breadthFirstSearch(self, array):
+        queue = []
+        queue.append(self)
+        
+        while len(queue) > 0:
+            currentNode = queue.pop(0)
+            array.append(currentNode.name)
+            for child in currentNode.children:
+                queue.append(child)
+            
+        return array
