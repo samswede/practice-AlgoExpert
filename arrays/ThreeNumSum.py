@@ -70,15 +70,15 @@ class Tests(unittest.TestCase):
     @given(st.lists(st.integers()))
     def test_sorted_list(self, array):
         if len(array) < 3:
-            answer = []
-            randint = st.integers(min_value=0, max_value=100)
-            self.assertEqual(threeNumSum(array, randint), answer)
+                answer = []
+                randint = st.integers(min_value=0, max_value=100)
+                self.assertEqual(threeNumSum(array, randint), answer)
         else:
-            num1, num2, num3 = array[0], array[1], array[2]
-            sum1 = num1 + num2 + num3
+                num1, num2, num3 = array[0], array[1], array[2]
+                sum1 = num1 + num2 + num3
 
-            tripletList = threeNumSum(array, sum1)
-            self.assertTrue(sorted([num1, num2, num3]) in tripletList)
+                tripletList = threeNumSum(array, sum1)
+                self.assertTrue(sorted([num1, num2, num3]) in tripletList)
 
 
 if __name__ == "__main__":
