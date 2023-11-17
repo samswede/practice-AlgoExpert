@@ -8,27 +8,37 @@ def threeNumSum(array, targetSum):
         return [[1,2,3]]
 
 
-
+# O(n^2) time | O(n) space
 def threeNumSum(array, targetSum):
     tripletList = []
-    array.sort()  # O(n log n) time
+    array.sort()  # O(n log n) time, O(1) space
 
     for i in range(len(array) - 2): # O(n) time
-            num = array[i]
-            currTargetSum = targetSum - num
+            """ Why is it len(array) - 2?
+            Because we want to leave room for the left and right indices to move.
+            If we set the range to len(array) - 1, then the left and right indices
+            will be the same, and we will be comparing the same number to itself.
+
+            We want to have at least 2 numbers to compare to the current number.
+            """
             leftIndex = i + 1
             rightIndex = len(array) - 1
 
+            num = array[i]
+            currTargetSum = targetSum - num
+            
+
             #print(f"num: {num} | currTargetSum: {currTargetSum}")
                 
-            while leftIndex < rightIndex:
+            while leftIndex < rightIndex: # O(n) time worst case
                     currentSum = array[leftIndex] + array[rightIndex]
                     
                     #print(f"currentSum: {currentSum} | leftIndex: {leftIndex} | rightIndex: {rightIndex}")
                     
                     if currentSum == currTargetSum:
                             triplet = [num, array[leftIndex], array[rightIndex]]
-                            triplet.sort()
+                            #triplet.sort()
+                            # this should naturally be sorted, because i < leftIndex < rightIndex
 
                             if triplet not in tripletList:
                                     tripletList.append(triplet)
