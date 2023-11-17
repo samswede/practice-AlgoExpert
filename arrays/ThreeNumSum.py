@@ -1,13 +1,6 @@
 import unittest
 from hypothesis import given, strategies as st
 
-def threeNumSum(array, targetSum):
-    if len(array) < 3:
-        return []
-    else:
-        return [[1,2,3]]
-
-
 # O(n^2) time | O(n) space
 def threeNumSum(array, targetSum):
     tripletList = []
