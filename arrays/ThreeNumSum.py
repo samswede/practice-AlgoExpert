@@ -7,16 +7,47 @@ def threeNumSum(array, targetSum):
     else:
         return [[1,2,3]]
 
-# O(n) time | O(n) space
-def twoNumberSum(array, targetSum):
-    nums = {}
-    for num in array:
-        potentialMatch = targetSum - num
-        if potentialMatch in nums:
-            return [targetSum - num, num]
-        else:
-            nums[num] = True
-    return []
+
+
+def threeNumSum(array, targetSum):
+    tripletList = []
+    array.sort()  # O(n log n) time
+
+    for i in range(len(array) - 2): # O(n) time
+            num = array[i]
+            currTargetSum = targetSum - num
+            leftIndex = i + 1
+            rightIndex = len(array) - 1
+
+            #print(f"num: {num} | currTargetSum: {currTargetSum}")
+                
+            while leftIndex < rightIndex:
+                    currentSum = array[leftIndex] + array[rightIndex]
+                    
+                    #print(f"currentSum: {currentSum} | leftIndex: {leftIndex} | rightIndex: {rightIndex}")
+                    
+                    if currentSum == currTargetSum:
+                            triplet = [num, array[leftIndex], array[rightIndex]]
+                            triplet.sort()
+
+                            if triplet not in tripletList:
+                                    tripletList.append(triplet)
+
+                            # Update indices to find next possible triplet
+                            leftIndex += 1
+                            rightIndex -= 1
+
+                    elif currentSum < currTargetSum:
+                            leftIndex += 1
+                    else:
+                            rightIndex -= 1
+
+    return tripletList
+
+
+# Why does list.sort() return None?
+# Because it modifies the list in-place. sorted(list) returns a new list and leaves the original alone.
+# Therefore, 
 
 class Tests(unittest.TestCase):
 
@@ -28,28 +59,24 @@ class Tests(unittest.TestCase):
         # check that if the list is not empty, that each list in the list has 3 elements
         self.assertEqual(len(threeNumSum([1,2,3], 6)[0]), 3)
 
-        # check that if the list is empty, that the function returns an empty list
-        self.assertEqual(threeNumSum([], 6), [])
-        
+
     def test_known_value_1(self):
         
-        pass
-"""        
-    # a check that the list is sorted (ascending)
+        self.assertEqual(threeNumSum([1,2,3], 6), [[1,2,3]])
+     
     @given(st.lists(st.integers()))
     def test_sorted_list(self, array):
-        self.assertEqual(threeNumSum(array, 6), sorted(threeNumSum(array, 6)))
-"""
-""" 
-    def test_known_value(self):
-        self.assertEqual(getNthFib(6), 5)
+        if len(array) < 3:
+            answer = []
+            randint = st.integers(min_value=0, max_value=100)
+            self.assertEqual(threeNumSum(array, randint), answer)
+        else:
+            num1, num2, num3 = array[0], array[1], array[2]
+            sum1 = num1 + num2 + num3
 
-    @given(st.integers(min_value=3, max_value=25))
-    def test_fibonacci_property(self, n):
-        fib_n = getNthFib(n)
-        fib_n_minus_1 = getNthFib(n-1)
-        fib_n_minus_2 = getNthFib(n-2)
-        self.assertEqual(fib_n, fib_n_minus_1 + fib_n_minus_2)
- """
+            tripletList = threeNumSum(array, sum1)
+            self.assertTrue(sorted([num1, num2, num3]) in tripletList)
+
+
 if __name__ == "__main__":
     unittest.main(argv=['first-arg-is-ignored'], exit=False)
