@@ -25,8 +25,9 @@ def stringifyArray(array):
 
     return string
  """
+
 # O(n) time | O(n) space
-def maxSubsetSumNoAdjacent(array, memo={'': 0}):
+def maxSubsetSumNoAdjacent(array):
 
     if len(array) == 0:
         return 0
