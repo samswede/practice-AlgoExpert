@@ -1,7 +1,23 @@
 import unittest
 from hypothesis import given, strategies as st
 
+"""
+Lessons:
+    - Dynamic programming doesn't always mean memoization
 
+    - Memoization is a form of caching
+    - Caching is a form of dynamic programming
+    - Dynamic programming is a form of recursion
+    - Recursion is a form of iteration
+
+    iteration -> recursion -> dynamic programming -> caching -> memoization
+
+    Dynamic programming is about breaking a problem down into smaller subproblems,
+    and then combining the solutions to those subproblems to solve the original problem.
+
+    
+
+"""
 
 """ def maxSubsetSumNoAdjacent(array, memo={'': 0}):
 
