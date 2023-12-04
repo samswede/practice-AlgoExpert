@@ -26,18 +26,7 @@ while minHeap is not empty:
 
 '''
 
-class Node:
-    def __init__(self, row, column, isObstacle):
-        self.id = str(row) + "-" + str(column)
-        self.isObstacle = isObstacle
-        self.row = row
-        self.column = column
 
-        self.g = float('inf') # distance from start node
-        #self.h = float('inf') # heuristic distance from end node
-        self.f = float('inf') # g + h = estimated distance from start to end
-
-        self.cameFrom = None
 
 def aStarSearch(startNode, goalNode, graph):
     nodes = initialiseGraph(graph)
@@ -55,44 +44,56 @@ def aStarSearch(startNode, goalNode, graph):
 
     while not nodesToVisit.isEmpty():
         currentNode = nodesToVisit.remove() # pop the node with the smallest f value
-        print(f'currentNode: {currentNode.id}')
+        #print(f'currentNode: {currentNode.id}')
         if currentNode == goalNode:
             break
 
         neighbors = getNeighboringNodes(currentNode, nodes)
 
         for neighbor in neighbors:
-            print(f'considering neighbor {neighbor.id}')
+            #print(f'considering neighbor {neighbor.id}')
 
             if neighbor.isObstacle == 1:
-                print(f'neighbor {neighbor.id} is an obstacle')
+                #print(f'neighbor {neighbor.id} is an obstacle')
                 continue
             tenativeGScore = currentNode.g + 1 # current min distance + distance(currentNode, neighbor)
 
             if tenativeGScore >= neighbor.g:
                 # the neighbor is already closer to the start node
                 # therefore, we don't need to update it
-                print(f'neighbor {neighbor.id} is already closer to the start node')
+                #print(f'neighbor {neighbor.id} is already closer to the start node')
                 continue
             
             # the neighbor is closer to the start node
-            print(f'neighbor {neighbor.id} is closer to the start node')
+            #print(f'neighbor {neighbor.id} is closer to the start node')
             neighbor.cameFrom = currentNode
 
             neighbor.g = tenativeGScore
             neighbor.f = neighbor.g + heuristic_distance(neighbor, goalNode)
 
-            print(f'neighbor {neighbor.id} has g: {neighbor.g}, f: {neighbor.f}')
+            #print(f'neighbor {neighbor.id} has g: {neighbor.g}, f: {neighbor.f}')
 
             if not nodesToVisit.containsNode(neighbor):
                 nodesToVisit.insert(neighbor)
-                print(f'neighbor {neighbor.id} was not in the heap, so it was inserted')
+                #print(f'neighbor {neighbor.id} was not in the heap, so it was inserted')
             else:
                 nodesToVisit.update(neighbor)
-                print(f'neighbor {neighbor.id} was in the heap, so it was updated')
+                #print(f'neighbor {neighbor.id} was in the heap, so it was updated')
 
     return reconstructPath(goalNode)
 
+class Node:
+    def __init__(self, row, column, isObstacle):
+        self.id = str(row) + "-" + str(column)
+        self.isObstacle = isObstacle
+        self.row = row
+        self.column = column
+
+        self.g = float('inf') # distance from start node
+        #self.h = float('inf') # heuristic distance from end node
+        self.f = float('inf') # g + h = estimated distance from start to end
+
+        self.cameFrom = None
 
 def reconstructPath(goalNode):
     if not goalNode.cameFrom:
@@ -139,6 +140,7 @@ def getNeighboringNodes(node, nodes):
     if column > 0: # if not first column, LEFT
         neighbors.append(nodes[row][column - 1])
     return neighbors
+
 
 
 # Priority Queue, implemented as a Min Heap.
@@ -358,21 +360,35 @@ class Tests(unittest.TestCase):
 if __name__ == "__main__":
     #unittest.main(argv=['first-arg-is-ignored'], exit=False)
     inputs = {}
-    inputs['startNode'] = [1, 1]
-    inputs['goalNode'] = [8, 8]
+    inputs['startNode'] = [1, 11]
+    inputs['goalNode'] = [22, 4]
     inputs['graph'] = [
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-                    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
-                    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
-                    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
-                    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
-                    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
-                    [1, 1, 1, 1, 1, 1, 0, 0, 0, 1],
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-                ]
-    
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+    [0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+    [0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+    [0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+    [0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+    [0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0],
+    [0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1],
+    [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0],
+    [0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0],
+    [0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0],
+    [0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0],
+    [0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+    [0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  ]
     path = aStarSearch(startNode=inputs['startNode'], goalNode=inputs['goalNode'], graph=inputs['graph'])
     print(f'path: {path}')
     inputs['path'] = path
