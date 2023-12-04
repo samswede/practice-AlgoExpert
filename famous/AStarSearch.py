@@ -27,7 +27,7 @@ while minHeap is not empty:
 '''
 
 class Node:
-    def __init__(self, row, column, isObstacle=False):
+    def __init__(self, row, column, isObstacle):
         self.id = str(row) + "-" + str(column)
         self.isObstacle = isObstacle
         self.row = row
@@ -58,7 +58,7 @@ def aStarSearch(graph=[[0, 0], [0, 0]], start=[0,0], goal=[1,1]):
         neighbors = getNeighboringNodes(currentNode, nodes)
 
         for neighbor in neighbors:
-            if neighbor.isObstacle:
+            if neighbor.isObstacle == 1:
                 continue
             tenativeGScore = currentNode.g + 1 # current min distance + distance(currentNode, neighbor)
 
