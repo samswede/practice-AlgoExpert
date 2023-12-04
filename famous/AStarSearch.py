@@ -128,6 +128,7 @@ def getNeighboringNodes(node, nodes):
     return neighbors
 
 
+# Priority Queue, implemented as a Min Heap.
 class MinHeap:
     def __init__(self, array):
         # Holds the position in the heap of each node
@@ -194,17 +195,197 @@ class MinHeap:
         self.siftUp(self.nodePositionsInHeap[node.id], self.heap)
 
 
+def visualize_search(inputs):
+    # Extracting inputs
+    startNode = inputs['startNode']
+    goalNode = inputs['goalNode']
+    graph = inputs['graph']
+    path = inputs['path']
 
+    # Creating a copy of the graph to modify
+    visualized_graph = [row[:] for row in graph]
+
+    # Marking the path in the graph
+    # 2 for start, 3 for path, 4 for goal
+    for step in path:
+        x, y = step
+        visualized_graph[y][x] = 3
+
+    # Marking start and goal nodes
+    visualized_graph[startNode[1]][startNode[0]] = 2
+    visualized_graph[goalNode[1]][goalNode[0]] = 4
+
+    return visualized_graph
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+def plot_visualized_graph(visualized_graph):
+    # Convert the visualized_graph to a NumPy array for easier handling with matplotlib
+    visualized_graph = np.array(visualized_graph)
+
+    # Create a color map for the visualization
+    colors = ['white', 'black', 'green', 'blue', 'red']
+    cmap = plt.cm.colors.ListedColormap(colors)
+
+    # Create a figure and axis object, adjusting the figure size dynamically based on the graph
+    fig, ax = plt.subplots(figsize=(visualized_graph.shape[1]/2, visualized_graph.shape[0]/2))
+
+    # Display the image
+    cax = ax.imshow(visualized_graph, cmap=cmap)
+
+    # Create a color bar
+    bounds = [0, 1, 2, 3, 4, 5]
+    norm = plt.cm.colors.BoundaryNorm(bounds, cmap.N)
+    plt.colorbar(cax, ax=ax, boundaries=bounds, ticks=[0, 1, 2, 3, 4])
+
+    # Set axis labels
+    ax.set_xlabel('X Coordinate')
+    ax.set_ylabel('Y Coordinate')
+
+    # Set title
+    ax.set_title('Visualized Search Path')
+
+    # Show the plot
+    plt.show()
 
 class Tests(unittest.TestCase):
+
+    def stuff(self):
+        {
+        "startNode": [0, 1],
+        "goalNode": [4, 3],
+        "graph": [
+                    [0, 0, 0, 0, 0],
+                    [0, 1, 1, 1, 0],
+                    [0, 0, 0, 0, 0],
+                    [1, 0, 1, 1, 1],
+                    [0, 0, 0, 0, 0]
+                ],
+        "path": [
+                    [0, 1],
+                    [0, 0],
+                    [1, 0],
+
+                    [2, 0],
+                    [2, 1],
+
+                    [3, 1],
+                    [4, 1],
+                    [4, 2],
+                    [4, 3]
+                ]
+        }
+
     def test_base_cases(self):
         self.assertIsInstance(aStarSearch(), List)
 
 
-""" def test_known_values(self):
-    self.assertEqual(longestPeak([1,2,3]), 0)
- """
+    def test_case_1(self):
+        test_1 = {
+        "startNode": [0, 1],
+        "goalNode": [4, 3],
+        "graph": [
+                    [0, 0, 0, 0, 0],
+                    [0, 1, 1, 1, 0],
+                    [0, 0, 0, 0, 0],
+                    [1, 0, 1, 1, 1],
+                    [0, 0, 0, 0, 0]
+                ],
+        "path": [
+                    [0, 1],
+                    [0, 0],
+                    [1, 0],
 
+                    [2, 0],
+                    [2, 1],
+
+                    [3, 1],
+                    [4, 1],
+                    [4, 2],
+                    [4, 3]
+                ],
+        "return": [
+                    [2, 2, 0, 0, 0],
+                    [2, 1, 1, 1, 0],
+                    [2, 2, 0, 0, 0],
+                    [1, 2, 1, 1, 1],
+                    [0, 2, 2, 2, 0]
+                ]
+        }
+        self.assertEqual(aStarSearch(graph=test_1['graph'], start=test_1['startNode'], goal=test_1['goalNode']), test_1['path'])
+    def test_case_2(self):
+        {
+  "startRow": 1,
+  "startCol": 1,
+  "endRow": 8,
+  "endCol": 8,
+  "graph": [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
+    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
+    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
+    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
+    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
+    [1, 1, 1, 1, 1, 1, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+  ]
+}
+        test_2 = {
+        "startNode": [1, 1],
+        "goalNode": [8, 8],
+        "graph": [
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    [1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+                    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
+                    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
+                    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
+                    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
+                    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
+                    [1, 1, 1, 1, 1, 1, 0, 0, 0, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+                ],
+        "path": [
+                    [0, 1],
+                    [0, 0],
+                    [1, 0],
+
+                    [2, 0],
+                    [2, 1],
+
+                    [3, 1],
+                    [4, 1],
+                    [4, 2],
+                    [4, 3]
+                ]
+        }
+        self.assertEqual(aStarSearch(graph=test_2['graph'], start=test_2['startNode'], goal=test_2['goalNode']), test_2['path'])
+ 
 
 if __name__ == "__main__":
-    unittest.main(argv=['first-arg-is-ignored'], exit=False)
+    #unittest.main(argv=['first-arg-is-ignored'], exit=False)
+    inputs = {}
+    inputs['startNode'] = [3, 6]
+    inputs['goalNode'] = [8, 8]
+    inputs['graph'] = [
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    [1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+                    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
+                    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
+                    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
+                    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
+                    [1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
+                    [1, 1, 1, 1, 1, 1, 0, 0, 0, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+                ]
+    
+    path = aStarSearch(graph=inputs['graph'], start=inputs['startNode'], goal=inputs['goalNode'])
+    inputs['path'] = path
+    visualized_graph = visualize_search(inputs)
+    plot_visualized_graph(visualized_graph)
+
