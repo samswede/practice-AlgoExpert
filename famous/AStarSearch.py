@@ -39,11 +39,14 @@ class Node:
 
         self.cameFrom = None
 
-def aStarSearch(graph=[[0, 0], [0, 0]], start=[0,0], goal=[1,1]):
+def aStarSearch(startNode, goalNode, graph):
     nodes = initialiseGraph(graph)
 
-    startNode = nodes[start[0]][start[1]]
-    goalNode = nodes[goal[0]][goal[1]]
+    startRow, startCol = startNode[0], startNode[1]
+    goalRow, goalCol = goalNode[0], goalNode[1]
+
+    startNode = nodes[startRow][startCol]
+    goalNode = nodes[goalRow][goalCol]
 
     startNode.g = 0
     startNode.f = startNode.g + heuristic_distance(startNode, goalNode)
@@ -52,31 +55,41 @@ def aStarSearch(graph=[[0, 0], [0, 0]], start=[0,0], goal=[1,1]):
 
     while not nodesToVisit.isEmpty():
         currentNode = nodesToVisit.remove() # pop the node with the smallest f value
+        print(f'currentNode: {currentNode.id}')
         if currentNode == goalNode:
             break
 
         neighbors = getNeighboringNodes(currentNode, nodes)
 
         for neighbor in neighbors:
+            print(f'considering neighbor {neighbor.id}')
+
             if neighbor.isObstacle == 1:
+                print(f'neighbor {neighbor.id} is an obstacle')
                 continue
             tenativeGScore = currentNode.g + 1 # current min distance + distance(currentNode, neighbor)
 
             if tenativeGScore >= neighbor.g:
                 # the neighbor is already closer to the start node
                 # therefore, we don't need to update it
+                print(f'neighbor {neighbor.id} is already closer to the start node')
                 continue
             
             # the neighbor is closer to the start node
+            print(f'neighbor {neighbor.id} is closer to the start node')
             neighbor.cameFrom = currentNode
 
             neighbor.g = tenativeGScore
             neighbor.f = neighbor.g + heuristic_distance(neighbor, goalNode)
 
+            print(f'neighbor {neighbor.id} has g: {neighbor.g}, f: {neighbor.f}')
+
             if not nodesToVisit.containsNode(neighbor):
                 nodesToVisit.insert(neighbor)
+                print(f'neighbor {neighbor.id} was not in the heap, so it was inserted')
             else:
                 nodesToVisit.update(neighbor)
+                print(f'neighbor {neighbor.id} was in the heap, so it was updated')
 
     return reconstructPath(goalNode)
 
@@ -208,12 +221,12 @@ def visualize_search(inputs):
     # Marking the path in the graph
     # 2 for start, 3 for path, 4 for goal
     for step in path:
-        x, y = step
-        visualized_graph[y][x] = 3
+        row, column = step
+        visualized_graph[row][column] = 3
 
     # Marking start and goal nodes
-    visualized_graph[startNode[1]][startNode[0]] = 2
-    visualized_graph[goalNode[1]][goalNode[0]] = 4
+    visualized_graph[startNode[0]][startNode[1]] = 2
+    visualized_graph[goalNode[0]][goalNode[1]] = 4
 
     return visualized_graph
 
@@ -250,33 +263,9 @@ def plot_visualized_graph(visualized_graph):
     # Show the plot
     plt.show()
 
+
+
 class Tests(unittest.TestCase):
-
-    def stuff(self):
-        {
-        "startNode": [0, 1],
-        "goalNode": [4, 3],
-        "graph": [
-                    [0, 0, 0, 0, 0],
-                    [0, 1, 1, 1, 0],
-                    [0, 0, 0, 0, 0],
-                    [1, 0, 1, 1, 1],
-                    [0, 0, 0, 0, 0]
-                ],
-        "path": [
-                    [0, 1],
-                    [0, 0],
-                    [1, 0],
-
-                    [2, 0],
-                    [2, 1],
-
-                    [3, 1],
-                    [4, 1],
-                    [4, 2],
-                    [4, 3]
-                ]
-        }
 
     def test_base_cases(self):
         self.assertIsInstance(aStarSearch(), List)
@@ -369,7 +358,7 @@ class Tests(unittest.TestCase):
 if __name__ == "__main__":
     #unittest.main(argv=['first-arg-is-ignored'], exit=False)
     inputs = {}
-    inputs['startNode'] = [3, 6]
+    inputs['startNode'] = [1, 1]
     inputs['goalNode'] = [8, 8]
     inputs['graph'] = [
                     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -384,7 +373,8 @@ if __name__ == "__main__":
                     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
                 ]
     
-    path = aStarSearch(graph=inputs['graph'], start=inputs['startNode'], goal=inputs['goalNode'])
+    path = aStarSearch(startNode=inputs['startNode'], goalNode=inputs['goalNode'], graph=inputs['graph'])
+    print(f'path: {path}')
     inputs['path'] = path
     visualized_graph = visualize_search(inputs)
     plot_visualized_graph(visualized_graph)
