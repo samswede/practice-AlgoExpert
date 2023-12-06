@@ -139,7 +139,7 @@ stock_prices = generate_noisy_stock_data(100, 100, 0.02, 0.005)
 # Test with the provided array
 test_prices = [1, 2, 3, 4, 5, 10, 20, 25, 24, 23, 22, 21, 30, 40, 50, 1, 2, 3, 4, 5]
 
-max_transactions = 1
+max_transactions = 5
 max_profit, transactions = maxProfitWithKTransactions_final(stock_prices, max_transactions)
 
 print(f'Transactions: {transactions}')
