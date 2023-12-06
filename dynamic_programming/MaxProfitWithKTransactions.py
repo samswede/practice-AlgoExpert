@@ -168,11 +168,79 @@ def maxProfitWithKTransactions(prices, k):
             currentProfits[d] = max(currentProfits[d - 1], maxThusFar + boundaryPrices[d])
        
     # Final profit is in evenProfits or oddProfits, depending on the parity of k
-    return evenProfits[-1] if k % 2 == 0 else oddProfits[-1]
+    maxProfit = evenProfits[-1] if k % 2 == 0 else oddProfits[-1]
+
+    return maxProfit
+
+
+
+
+def ExtractBoundariesOfIncreasingSubsequences_final(arr):
+    if not arr:
+        return []
+
+    boundaries = []
+    start = 0  # Change from storing the start price to start index
+
+    for i in range(1, len(arr)):
+        if arr[i] <= arr[i - 1]:
+            if arr[start] != arr[i - 1]:
+                boundaries.append([arr[start], start, arr[i - 1], i - 1])  # Store price and index
+            start = i
+
+    if arr[start] != arr[-1]:
+        boundaries.append([arr[start], start, arr[-1], len(arr) - 1])
+
+    return boundaries
+
+
+
+def maxProfitWithKTransactions_final(prices, k):
+    if not len(prices):
+        return 0, []
+
+    boundaryPrices = ExtractBoundariesOfIncreasingSubsequences_final(prices)
+    if not boundaryPrices:
+        return 0, []
+
+    evenProfits = [0 for _ in boundaryPrices]
+    oddProfits = [0 for _ in boundaryPrices]
+    transactions = [[] for _ in range(k)]  # Initialize transactions for each transaction number
+
+    for t in range(1, k + 1):
+        maxThusFar = float("-inf")
+        currentTransactions = None
+
+        if t % 2 == 1:
+            currentProfits, previousProfits = oddProfits, evenProfits
+        else:
+            currentProfits, previousProfits = evenProfits, oddProfits
+
+        for d in range(1, len(boundaryPrices)):
+            buyPrice, buyIndex, sellPrice, sellIndex = boundaryPrices[d]
+            maxThusFar = max(maxThusFar, previousProfits[d - 1] - buyPrice)
+            profitIfSellToday = maxThusFar + sellPrice
+
+            if profitIfSellToday > currentProfits[d - 1]:
+                currentProfits[d] = profitIfSellToday
+                currentTransactions = [[buyPrice, buyIndex], [sellPrice, sellIndex]]
+            else:
+                currentProfits[d] = currentProfits[d - 1]
+
+        # Store the best transaction for this transaction number
+        transactions[t - 1] = currentTransactions
+
+    maxProfit = evenProfits[-1] if k % 2 == 0 else oddProfits[-1]
+    return maxProfit, transactions
+
+
+
 
 # Test with the provided array
-test_array = [1, 2, 3, 4, 5, 10, 20, 25, 24, 23, 22, 21, 30, 40, 50, 1, 2, 3, 4, 5]
+test_prices = [1, 2, 3, 4, 5, 10, 20, 25, 24, 23, 22, 21, 30, 40, 50, 1, 2, 3, 4, 5]
 
-boundaries = ExtractBoundariesOfIncreasingSubsequences(test_array)
-print(f'Sequence: {test_array}')
-print(f'The boundaries are: {boundaries}')
+max_transactions = 2
+max_profit, transactions = maxProfitWithKTransactions_final(test_prices, max_transactions)
+
+print(f"Maximum profit with max {max_transactions} transactions: ${max_profit}")
+print(f'Transactions: {transactions}')
