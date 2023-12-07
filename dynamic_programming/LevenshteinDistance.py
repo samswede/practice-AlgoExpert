@@ -87,3 +87,37 @@ str1 = "abcjkeanaaaaaadkjanwaaaamnbvqwertabdjfkeajdaaaaaaaaaamnbvcqwertzuioqwert
 str2 = "yabdjfkeajdaaaaaaaaaamnbvcqwertzuioqwertzuiopasdfghjkljhgfdsyxcvbnm,sdfgabdjfkeajdaaaaaaaaaamnbvcqwertzuioqwertzuiopasdfghjkdaaaaaaaaaamnbvcqwertzuioqwertzuiopasdfghjkljhgfdsyxcvbndaaaaaaaaaamnbvcqwertzuioqwertzuiopasdfghjkljhgfdsyxcvbncqwertzuioqwertzuiopasdfghjkljhgfdsyxcvbcqwertzuioqwertzuiopasdfghjkljhgfdsyxcvbaamnbvqwercqwertzuioqwertzuiopasdfghjkljhaamnbvqwercqwertzuioqwertzuiopasdfghjkljh"
 print(levenshteinDistance(str1, str2))
 print(levenshteinDistance_fast(str1, str2))
+
+'''
+Explanation
+
+
+Your confusion is understandable. Let's clarify how the values in evenEdits and oddEdits are used and updated during each iteration of the loop in the levenshteinDistance_fast function.
+
+The key idea behind using evenEdits and oddEdits is to alternate between them for each row of the conceptual edit distance matrix. This is done to save space, as you only need the values from the previous row to calculate the values for the current row.
+
+Initialization:
+
+evenEdits is initialized as [0, 1, 2, 3, 4, 5, ...]. This represents the first row of the matrix, where the edit distance is the number of insertions needed to convert an empty string into the smaller string (up to each position).
+First Iteration (i=1, odd):
+
+During the first iteration (when i is 1, which is odd), currentEdits is set to oddEdits, and previousEdits is set to evenEdits.
+currentEdits[0] is set to i (which is 1 in this case). This represents the cost of deleting all characters from the larger string up to this point (one deletion).
+The rest of oddEdits is then filled based on the formula, considering the values in evenEdits (previous row) and the already calculated values of oddEdits (current row).
+Second Iteration (i=2, even):
+
+Now, i is even, so currentEdits becomes evenEdits, and previousEdits is oddEdits.
+Again, currentEdits[0] is set to i (now 2). This step is crucial; it updates the first element of evenEdits to reflect the cost of deleting characters from the larger string up to this point (two deletions).
+The rest of evenEdits is updated based on the values in oddEdits (the previous row) and the already calculated values in evenEdits (the current row).
+Subsequent Iterations:
+
+This alternating pattern continues. Each row (either in evenEdits or oddEdits) is recalculated based on the values of the previous row and the current row calculations.
+It might seem like evenEdits always starts as [0, 1, 2, 3, 4, 5, ...], but after the first iteration, this is no longer the case. The first element of evenEdits or oddEdits is always set to the row number i, and the rest of the elements are recalculated based on the edit distance formula.
+Final Result:
+
+The final edit distance is found in the last element of the array (evenEdits or oddEdits) that was used to calculate the last row, which depends on the parity of the length of the big string.
+This approach ensures that each array (evenEdits and oddEdits) is updated in each iteration, reflecting the current state of the computation without needing to maintain the entire matrix.
+
+
+
+'''
