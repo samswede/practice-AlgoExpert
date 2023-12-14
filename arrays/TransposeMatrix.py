@@ -5,6 +5,15 @@ def transposeMatrix(matrix):
     transposedMatrix = [[matrix[j][i] for j in range(len(matrix))] for i in range(len(matrix[0]))]
     return transposedMatrix
 
+def transposeMatrix(matrix):
+    """
+    This solution is from AlgoExpert. It is a bit more elegant than mine.
+
+    The "*" sign unpacks the matrix (removes the outer brackets).
+    The "zip" function for each row, takes all the elements at index i, for each i, and forms a column, thus returning in the end an unpacked transposed matrix.
+    The "list" function packs it back to a matrix.
+    """
+    return list(zip(*matrix))
 
 class TestProgram(unittest.TestCase):
 
